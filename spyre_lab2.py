@@ -3,7 +3,6 @@ import pandas as pd
 from spyre import server
 
 
-
 class WebApp(server.App):
     title = "Lab 2"
     inputs = [
