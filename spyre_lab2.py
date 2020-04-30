@@ -138,7 +138,6 @@ class WebApp(server.App):
 
     def Plot(self, params):
 
-
         oy = params["index"]
         year = params["year"]
         week_from = params["week_from"]
@@ -146,6 +145,8 @@ class WebApp(server.App):
 
         df = self.Data(params)
         plot_obj = df.plot(x='week', y=oy)
+
+
         plot_obj.set_title(oy + " for the selected period of " + year)
         plot_obj.set_ylabel(oy + ", %")
         plot_obj.set_xlabel("Selected period: weeks from " + week_from + " to " + week_to + " of " + year)
