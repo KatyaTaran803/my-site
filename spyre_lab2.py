@@ -1,7 +1,7 @@
-
 import pandas as pd
 from spyre import server
 
+df_all = pd.read_csv("csv/df_lab2.csv")
 
 
 class WebApp(server.App):
@@ -102,8 +102,7 @@ class WebApp(server.App):
     controls = [{"type": "hidden",
                  "id": "update_data"}]
 
-
-    tabs = ["Table", "Plot"]
+    tabs = ["Table", "Plot", "Table1","Plot1"]
     outputs = [
 
         {
@@ -111,7 +110,14 @@ class WebApp(server.App):
             "id": "Data",
             "control_id": "update_data",
             "tab": "Table",
-           # "on_page_load": True
+            # "on_page_load": True
+        },
+        {
+            "type": "table",
+            "id": "Data1",
+            "control_id": "update_data",
+            "tab": "Table1",
+            # "on_page_load": True
         },
 
         {
@@ -119,7 +125,14 @@ class WebApp(server.App):
             "id": "Plot",
             "control_id": "update_data",
             "tab": "Plot"
+        },
+        {
+            "type": "plot",
+            "id": "Plot1",
+            "control_id": "update_data",
+            "tab": "Plot1"
         }
+
     ]
 
     def Data(self, params):
@@ -134,12 +147,17 @@ class WebApp(server.App):
         filtered_data = df[(df.week >= week_from) & (df.week <= week_to) & (df.year == year)]
         return filtered_data
 
-
+    def Data1(self, params):
+        df1 = df_all.drop(['NDVI', 'BT', 'VCI', 'TCI', 'year', 'region_index', 'region_name'], axis=1).groupby(
+            ['week']).min()
+        df2 = df_all.drop(['NDVI', 'BT', 'VCI', 'TCI', 'year', 'region_index', 'region_name'], axis=1).groupby(
+            ['week']).max()
+        new_df1 = pd.merge(df1, df2, on="week")
+        print(new_df1)
+        return new_df1
 
 
     def Plot(self, params):
-
-
         oy = params["index"]
         year = params["year"]
         week_from = params["week_from"]
@@ -152,6 +170,14 @@ class WebApp(server.App):
         plot_obj.set_xlabel("Selected period: weeks from " + week_from + " to " + week_to + " of " + year)
         fig = plot_obj.get_figure()
         return fig
+
+    def Plot1(self, params):
+
+        df = self.Data1(params)
+        plot_obj = df.plot()
+        fig = plot_obj.get_figure()
+        return fig
+
 
 
 app = WebApp()
