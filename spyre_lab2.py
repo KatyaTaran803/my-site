@@ -111,7 +111,7 @@ class WebApp(server.App):
             "id": "Data",
             "control_id": "update_data",
             "tab": "Table",
-            "on_page_load": True
+           # "on_page_load": True
         },
 
         {
